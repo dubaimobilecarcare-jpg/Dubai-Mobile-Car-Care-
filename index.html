@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dubai Mobile Car Care</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBc3DxQ2d5dokXqSsbb5mNWWLmTMLtOO8w&libraries=places"></script>
+  <style>
+    body, html { height: 100%; margin: 0; font-family: Arial, sans-serif; }
+    h1 { text-align: center; margin-top: 10px; color: #25D366; }
+    #map { height: 50%; }
+    #form-container { padding: 15px; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+    button { margin-top: 15px; padding: 10px 20px; background-color: #25D366; color: white; border: none; cursor: pointer; font-size: 16px; width: 100%; }
+  </style>
+</head>
+<body>
+
+<h1>Dubai Mobile Car Care</h1>
+
+<div id="map"></div>
+
+<div id="form-container">
+  <label for="client-name">اسم العميل</label>
+  <input type="text" id="client-name" placeholder="أدخل الاسم">
+
+  <label for="issue">وصف العطل</label>
+  <textarea id="issue" rows="3" placeholder="مثال: البطارية لا تعمل"></textarea>
+
+  <label for="datetime">الوقت المناسب</label>
+  <input type="datetime-local" id="datetime">
+
+  <label for="emergency">حالة الطوارئ</label>
+  <select id="emergency">
+    <option value="لا">لا</option>
+    <option value="نعم">نعم</option>
+  </select>
+
+  <button onclick="sendToWhatsApp()">إرسال على WhatsApp</button>
+</div>
+
+<script>
+  let map;
+  let marker;
+
+  function initMap() {
+    // مركز الخريطة على دبي
+    const center = { lat: 25.276987, lng: 55.296249 }; // دبي
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 10,
+      center: center
+    });
+
+    marker = new google.maps.Marker({
+      position: center,
+      map: map,
+      draggable: true,
+      title: "اسحب لتحديد موقعك"
+    });
+  }
+
+  function sendToWhatsApp() {
+    const name = document.getElementById('client-name').value || "غير محدد";
+    const issue = document.getElementById('issue').value || "غير محدد";
+    const datetime = document.getElementById('datetime').value || "غير محدد";
+    const emergency = document.getElementById('emergency').value;
+
+    // رابط Google Maps
+    const lat = marker.getPosition().lat();
+    const lng = marker.getPosition().lng();
+    const mapLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+    const message = `اسم العميل: ${name}\nالعطل: ${issue}\nالوقت المناسب: ${datetime}\nحالة الطوارئ: ${emergency}\nالموقع: ${mapLink}`;
+
+    // رقمك على WhatsApp
+    const myNumber = "971589938384"; 
+    const whatsappURL = `https://wa.me/${myNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+  }
+
+  window.onload = initMap;
+</script>
+
+</body>
+</html>
